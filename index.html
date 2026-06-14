@@ -4,299 +4,286 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0b0f17" />
-<title>AI Stack — Ecosystem Map</title>
+<title>The AI Stack — A Field Guide</title>
 <style>
   :root{
-    --bg:#0b0f17; --bg2:#0f1622;
-    --ink:#eef2f8; --muted:#9aa7bd; --faint:#6b788f;
+    --bg:#0b0f17; --bg2:#0f1622; --card:#121a28;
+    --ink:#eef2f8; --muted:#aab6cc; --faint:#7a8aa3;
     --line:rgba(255,255,255,.10);
-    --glass:rgba(255,255,255,.045);
-    --glass-hi:rgba(255,255,255,.085);
-    --accent:#5b9dff; --accent2:#7cf3d0;
-    --frontier:#5b9dff; --local:#7cf3d0;
-    --radius:18px;
-    --maxw:1120px;
+    --accent:#5b9dff; --frontier:#5b9dff; --local:#5fe6c0;
+    --maxw:860px;
   }
   @media (prefers-color-scheme: light){
-    :root{
-      --bg:#eef2f8; --bg2:#e3e9f4; --ink:#10151f; --muted:#46566f; --faint:#6b788f;
-      --line:rgba(10,20,40,.12); --glass:rgba(255,255,255,.55); --glass-hi:rgba(255,255,255,.8);
-    }
+    :root{--bg:#f4f7fc; --bg2:#eaf0f9; --card:#ffffff; --ink:#101620; --muted:#475670; --faint:#6f7e98;
+      --line:rgba(10,20,40,.12); --frontier:#1f6bff; --local:#0aa884;}
   }
   *{box-sizing:border-box}
-  html,body{margin:0; padding:0}
-  body{
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+  body{margin:0; background:var(--bg); color:var(--ink); line-height:1.6;
     font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
-    color:var(--ink); background:var(--bg);
-    -webkit-font-smoothing:antialiased; line-height:1.5;
-    min-height:100dvh; overflow-x:hidden;
-  }
-  /* liquid animated backdrop */
-  .blob{position:fixed; inset:-30vmax; z-index:-1; filter:blur(90px); opacity:.55; pointer-events:none}
-  .blob i{position:absolute; width:46vmax; height:46vmax; border-radius:50%; mix-blend-mode:screen; animation:drift 26s ease-in-out infinite}
-  .blob i:nth-child(1){background:#2f6bff; top:-6%; left:-4%}
-  .blob i:nth-child(2){background:#13b59a; bottom:-10%; right:-6%; animation-delay:-9s}
-  .blob i:nth-child(3){background:#7b4dff; top:30%; left:40%; animation-delay:-16s; opacity:.7}
-  @keyframes drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(6vmax,-4vmax) scale(1.12)}66%{transform:translate(-5vmax,5vmax) scale(.92)}}
-  @media (prefers-color-scheme: light){.blob{opacity:.35}}
-  @media (prefers-reduced-motion: reduce){.blob i{animation:none}}
+    -webkit-font-smoothing:antialiased; overflow-x:hidden;}
 
-  .wrap{max-width:var(--maxw); margin:0 auto; padding:clamp(16px,3vw,34px) clamp(14px,3vw,28px) 80px}
+  /* soft fixed backdrop — does NOT trap scroll */
+  .bg{position:fixed; inset:0; z-index:-1; pointer-events:none; overflow:hidden}
+  .bg i{position:absolute; border-radius:50%; filter:blur(100px); opacity:.4; mix-blend-mode:screen}
+  .bg i:nth-child(1){width:60vmax;height:60vmax;background:#2f6bff;top:-20%;left:-15%}
+  .bg i:nth-child(2){width:50vmax;height:50vmax;background:#12b58f;bottom:-25%;right:-15%}
+  @media (prefers-color-scheme: light){.bg i{opacity:.22}}
 
-  header.top{display:flex; flex-wrap:wrap; gap:14px; align-items:flex-end; justify-content:space-between; margin-bottom:clamp(16px,3vw,26px)}
-  h1{font-size:clamp(22px,4.4vw,38px); line-height:1.05; margin:0; letter-spacing:-.02em}
-  h1 small{display:block; font-size:clamp(12px,2.2vw,15px); font-weight:500; color:var(--muted); margin-top:8px; letter-spacing:0}
+  /* sticky nav */
+  .nav{position:sticky; top:0; z-index:20; backdrop-filter:blur(16px) saturate(160%); -webkit-backdrop-filter:blur(16px) saturate(160%);
+    background:color-mix(in srgb, var(--bg) 75%, transparent); border-bottom:1px solid var(--line)}
+  .nav .inner{max-width:var(--maxw); margin:0 auto; display:flex; align-items:center; gap:14px; padding:10px clamp(14px,3vw,22px)}
+  .brand{font-weight:800; font-size:15px; white-space:nowrap; letter-spacing:-.01em}
+  .brand b{color:var(--accent)}
+  .navlinks{display:flex; gap:4px; overflow-x:auto; scrollbar-width:none; -ms-overflow-style:none; margin-left:auto}
+  .navlinks::-webkit-scrollbar{display:none}
+  .navlinks a{flex:0 0 auto; text-decoration:none; color:var(--muted); font-size:13px; font-weight:600; padding:6px 10px; border-radius:8px}
+  .navlinks a:hover{color:var(--ink); background:var(--line)}
 
-  /* slice toggle */
-  .toggle{display:inline-flex; padding:4px; gap:4px; border-radius:999px; background:var(--glass); border:1px solid var(--line); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px)}
-  .toggle button{appearance:none; border:0; background:transparent; color:var(--muted); font:inherit; font-size:13px; font-weight:600; padding:8px 14px; border-radius:999px; cursor:pointer; transition:.25s; white-space:nowrap}
-  .toggle button[aria-pressed="true"]{color:#06121f; background:var(--ink)}
-  .toggle button.f[aria-pressed="true"]{background:var(--frontier)}
-  .toggle button.l[aria-pressed="true"]{background:var(--local)}
+  .wrap{max-width:var(--maxw); margin:0 auto; padding:0 clamp(16px,4vw,24px)}
 
-  .grid{display:grid; grid-template-columns:1fr; gap:14px}
-  @media(min-width:860px){ .grid{grid-template-columns:200px 1fr 200px; align-items:start} }
+  /* hero */
+  .hero{padding:clamp(48px,8vw,80px) 0 clamp(20px,5vw,40px)}
+  .hero h1{font-size:clamp(30px,7vw,56px); line-height:1.08; letter-spacing:-.03em; margin:0 0 18px; padding-top:.06em}
+  .hero h1 span{display:inline-block; padding-bottom:.08em}
+  .hero h1 span{background:linear-gradient(90deg,var(--frontier),var(--local)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .lead{font-size:clamp(16px,2.6vw,20px); color:var(--muted); max-width:64ch; margin:0 0 22px}
+  .keyidea{border-left:3px solid var(--accent); padding:10px 0 10px 18px; margin:24px 0; color:var(--ink); font-size:clamp(15px,2.4vw,18px)}
+  .keyidea b{color:var(--accent)}
 
-  .rail{display:flex; flex-direction:column; gap:10px}
-  .rail .railhead{font-size:11px; font-weight:800; letter-spacing:.08em; color:var(--muted); text-transform:uppercase}
-  .layers{display:flex; flex-direction:column; gap:12px}
+  /* legend */
+  .legend{display:flex; flex-wrap:wrap; gap:10px; margin:20px 0 8px}
+  .legend .pill{display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:7px 13px; background:var(--card)}
+  .dot{width:12px;height:12px;border-radius:50%}
+  .dot.f{background:var(--frontier)} .dot.l{background:transparent;border:2px solid var(--local)}
 
-  .card{
-    position:relative; text-align:left; width:100%; cursor:pointer; color:inherit;
-    background:var(--glass); border:1px solid var(--line); border-radius:var(--radius);
-    padding:16px 18px; backdrop-filter:blur(18px) saturate(140%); -webkit-backdrop-filter:blur(18px) saturate(140%);
-    transition:transform .22s cubic-bezier(.2,.8,.2,1), background .22s, border-color .22s, box-shadow .22s;
-    box-shadow:0 1px 0 rgba(255,255,255,.06) inset, 0 10px 30px rgba(0,0,0,.18);
-  }
-  .card:hover{transform:translateY(-3px); background:var(--glass-hi); border-color:rgba(255,255,255,.22)}
-  .card:active{transform:translateY(-1px) scale(.995)}
-  .card:focus-visible{outline:2px solid var(--accent); outline-offset:3px}
+  /* mini map */
+  .minimap{display:grid; grid-template-columns:1fr; gap:8px; margin:18px 0 10px}
+  .minimap a{display:flex; align-items:center; gap:12px; text-decoration:none; color:inherit; background:var(--card);
+    border:1px solid var(--line); border-radius:12px; padding:11px 14px; transition:.18s}
+  .minimap a:hover{transform:translateX(4px); border-color:var(--accent)}
+  .minimap .mn{width:26px;height:26px;border-radius:7px;background:var(--accent);color:#06121f;display:grid;place-items:center;font-weight:800;font-size:13px;flex:0 0 auto}
+  .minimap .rail .mn{background:var(--faint)}
+  .minimap .mt{font-weight:700}
+  .minimap .mg{margin-left:auto; color:var(--faint); font-size:12.5px; font-style:italic}
 
-  .card .row1{display:flex; align-items:center; gap:12px; padding-right:52px}
-  .rail .card .row1{padding-right:0}
-  .num{flex:0 0 auto; width:30px; height:30px; border-radius:9px; display:grid; place-items:center; font-weight:800; font-size:14px; background:var(--accent); color:#06121f}
-  .rail .num{width:24px;height:24px;border-radius:7px;font-size:12px;background:var(--muted)}
-  .ttl{font-weight:700; font-size:clamp(15px,2.4vw,17px); letter-spacing:-.01em}
-  .tag{margin-left:auto; font-size:11px; color:var(--faint); font-style:italic; white-space:nowrap}
-  .chips{display:flex; flex-wrap:wrap; gap:6px; margin-top:11px}
-  .chip{font-size:11.5px; color:var(--muted); padding:3px 9px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--line)}
-  .chip.f{color:var(--frontier); border-color:rgba(91,157,255,.4)}
-  .chip.l{color:var(--local); border-color:rgba(124,243,208,.4)}
+  /* sections */
+  section.layer{scroll-margin-top:64px; padding:clamp(30px,6vw,52px) 0; border-top:1px solid var(--line)}
+  .lhead{display:flex; align-items:center; gap:14px; margin-bottom:6px; flex-wrap:wrap}
+  .lnum{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-weight:800;font-size:18px;background:var(--accent);color:#06121f;flex:0 0 auto}
+  .layer.rail .lnum{background:var(--faint)}
+  .lhead h2{font-size:clamp(22px,4.5vw,32px); margin:0; letter-spacing:-.02em}
+  .ltag{color:var(--faint); font-style:italic; font-size:14px; width:100%; margin-left:56px; margin-top:-2px}
+  .role{font-size:clamp(15px,2.5vw,18px); color:var(--ink); margin:14px 0 18px; max-width:66ch}
 
-  /* slice badges */
-  .badges{position:absolute; top:12px; right:12px; display:flex; gap:6px}
-  .b{width:20px;height:20px;border-radius:50%; display:grid; place-items:center; font-size:10px; font-weight:800}
-  .b.f{background:var(--frontier); color:#06121f}
-  .b.l{background:transparent; color:var(--local); border:1.4px solid var(--local)}
+  .block{margin:16px 0}
+  .block h3{font-size:12px; text-transform:uppercase; letter-spacing:.09em; color:var(--accent); margin:0 0 6px}
+  .block p{margin:0; color:var(--muted); font-size:15.5px; max-width:68ch}
 
-  /* dim when filtered */
-  body[data-slice="f"] .card:not(.has-f){opacity:.32; filter:saturate(.4)}
-  body[data-slice="l"] .card:not(.has-l){opacity:.32; filter:saturate(.4)}
-  body[data-slice="f"] .card.has-f{border-color:rgba(91,157,255,.5); box-shadow:0 0 0 1px rgba(91,157,255,.35),0 10px 30px rgba(0,0,0,.2)}
-  body[data-slice="l"] .card.has-l{border-color:rgba(124,243,208,.5); box-shadow:0 0 0 1px rgba(124,243,208,.35),0 10px 30px rgba(0,0,0,.2)}
-  .card{transition:transform .22s cubic-bezier(.2,.8,.2,1), background .22s, border-color .22s, box-shadow .22s, opacity .3s, filter .3s}
+  .chips{display:flex; flex-wrap:wrap; gap:8px; margin:16px 0}
+  .chip{font-size:13px; color:var(--muted); padding:5px 12px; border-radius:999px; background:var(--card); border:1px solid var(--line)}
 
-  .flow{display:none}
-  @media(min-width:860px){
-    .flow{display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--faint); padding:0 4px; margin:-2px 0 2px}
-  }
+  .picks{display:grid; grid-template-columns:1fr; gap:12px; margin-top:18px}
+  @media(min-width:620px){.picks{grid-template-columns:1fr 1fr}}
+  .pick{border:1px solid var(--line); border-radius:14px; padding:15px 17px; background:var(--card)}
+  .pick.f{border-top:3px solid var(--frontier)} .pick.l{border-top:3px solid var(--local)}
+  .pick .lbl{font-size:12px; font-weight:800; letter-spacing:.04em; margin-bottom:6px}
+  .pick.f .lbl{color:var(--frontier)} .pick.l .lbl{color:var(--local)}
+  .pick .nm{font-weight:700; font-size:16px; margin-bottom:3px}
+  .pick .ds{font-size:14px; color:var(--muted)}
 
-  /* ===== detail sheet ===== */
-  .scrim{position:fixed; inset:0; background:rgba(4,8,14,.6); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); opacity:0; pointer-events:none; transition:.3s; z-index:40}
-  .scrim.open{opacity:1; pointer-events:auto}
-  .sheet{
-    position:fixed; z-index:50; left:50%; top:50%; transform:translate(-50%,-46%) scale(.96);
-    width:min(620px,94vw); max-height:86dvh; overflow:auto; opacity:0; pointer-events:none;
-    background:linear-gradient(180deg,var(--bg2),var(--bg)); border:1px solid var(--line); border-radius:24px;
-    padding:clamp(20px,4vw,30px); transition:.32s cubic-bezier(.2,.8,.2,1); box-shadow:0 30px 80px rgba(0,0,0,.5);
-  }
-  .sheet.open{opacity:1; pointer-events:auto; transform:translate(-50%,-50%) scale(1)}
-  @media(max-width:560px){
-    .sheet{left:0; top:auto; bottom:0; transform:translateY(14px); width:100vw; max-height:90dvh; border-radius:22px 22px 0 0}
-    .sheet.open{transform:translateY(0)}
-  }
-  .sheet h2{margin:0; font-size:clamp(19px,4vw,25px); letter-spacing:-.02em; display:flex; align-items:center; gap:12px}
-  .sheet .role{color:var(--muted); font-size:13px; margin:4px 0 18px}
-  .sheet h3{font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--accent); margin:20px 0 8px}
-  .sheet p{margin:0 0 10px; color:var(--ink); font-size:14.5px}
-  .sheet .pick{display:flex; gap:10px; flex-wrap:wrap; margin-top:6px}
-  .pickcard{flex:1 1 220px; border:1px solid var(--line); border-radius:14px; padding:12px 14px; background:var(--glass)}
-  .pickcard.f{border-color:rgba(91,157,255,.4)} .pickcard.l{border-color:rgba(124,243,208,.4)}
-  .pickcard b{display:block; font-size:12px; margin-bottom:3px}
-  .pickcard.f b{color:var(--frontier)} .pickcard.l b{color:var(--local)}
-  .pickcard span{font-size:13px; color:var(--muted)}
-  .close{position:absolute; top:14px; right:14px; width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--glass); color:var(--ink); font-size:18px; cursor:pointer; line-height:1}
-  .hint{font-size:12px; color:var(--faint); margin-top:6px}
-  footer{margin-top:34px; font-size:12px; color:var(--faint); text-align:center}
-  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+  /* decision */
+  .choose{scroll-margin-top:64px; padding:clamp(34px,7vw,60px) 0 20px; border-top:1px solid var(--line)}
+  .choose h2{font-size:clamp(22px,4.5vw,32px); letter-spacing:-.02em; margin:0 0 18px}
+  .qa{background:var(--card); border:1px solid var(--line); border-radius:16px; padding:6px 18px; margin-bottom:14px}
+  .qa summary{cursor:pointer; font-weight:700; font-size:16px; padding:14px 0; list-style:none; display:flex; justify-content:space-between; gap:10px}
+  .qa summary::-webkit-details-marker{display:none}
+  .qa summary::after{content:"+"; color:var(--accent); font-weight:800}
+  .qa[open] summary::after{content:"−"}
+  .qa .ans{padding:0 0 16px; color:var(--muted); font-size:15px}
+  .qa .ans b{color:var(--ink)}
+
+  footer{border-top:1px solid var(--line); padding:30px 0 60px; color:var(--faint); font-size:13px; text-align:center}
+  footer a{color:var(--accent); text-decoration:none}
+
+  .toTop{position:fixed; right:16px; bottom:16px; z-index:30; width:46px;height:46px;border-radius:50%;
+    background:var(--accent); color:#06121f; border:0; font-size:20px; font-weight:800; cursor:pointer; opacity:0; transform:translateY(12px); transition:.25s; box-shadow:0 8px 24px rgba(0,0,0,.3)}
+  .toTop.show{opacity:1; transform:none}
 </style>
 </head>
-<body data-slice="all">
-  <div class="blob" aria-hidden="true"><i></i><i></i><i></i></div>
-  <div class="wrap">
-    <header class="top">
-      <h1>AI Stack — Ecosystem Map
-        <small>One vertical slice = one box per layer, top to bottom. Tap any layer for how it works.</small>
-      </h1>
-      <div class="toggle" role="group" aria-label="Highlight a slice">
-        <button data-slice="all" aria-pressed="true">All</button>
-        <button class="f" data-slice="f" aria-pressed="false">◆ Frontier</button>
-        <button class="l" data-slice="l" aria-pressed="false">◇ Local</button>
-      </div>
-    </header>
+<body>
+<div class="bg" aria-hidden="true"><i></i><i></i></div>
 
-    <div class="grid">
-      <aside class="rail" id="railLeft"></aside>
-      <main>
-        <div class="flow"><span>request flows ↓ down</span><span>result flows ↑ up</span></div>
-        <div class="layers" id="layers"></div>
-      </main>
-      <aside class="rail" id="railRight"></aside>
+<nav class="nav">
+  <div class="inner">
+    <div class="brand">The <b>AI Stack</b></div>
+    <div class="navlinks" id="navlinks">
+      <a href="#top">Intro</a>
+      <a href="#L1">1·Surfaces</a>
+      <a href="#L2">2·Agents</a>
+      <a href="#L3">3·Protocol</a>
+      <a href="#L4">4·Access</a>
+      <a href="#L5">5·Models</a>
+      <a href="#L6">6·Runtime</a>
+      <a href="#L7">7·Compute</a>
+      <a href="#RK">Knowledge</a>
+      <a href="#RO">Orchestration</a>
+      <a href="#choose">Choose</a>
     </div>
-
-    <footer>Self-contained · works offline · open on any device. <span id="built"></span></footer>
   </div>
+</nav>
 
-  <div class="scrim" id="scrim"></div>
-  <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" tabindex="-1">
-    <button class="close" id="close" aria-label="Close">✕</button>
-    <div id="sheetBody"></div>
+<div class="wrap">
+  <header class="hero" id="top">
+    <h1>The AI tool sprawl,<br><span>finally organized.</span></h1>
+    <p class="lead">Qwen, DeepSeek, Claude Code, Codex, Ollama, Obsidian, MCP… it feels endless because it mixes <b>different layers</b> of one stack. Sort each tool into its layer and the whole picture snaps into focus.</p>
+    <div class="keyidea">The one rule that organizes everything: a workflow is a <b>vertical slice</b> — you pick <b>one box per layer, top to bottom</b>. "What should I use?" just means "which slice am I in?"</div>
+    <div class="legend">
+      <span class="pill"><span class="dot f"></span> Frontier slice — cloud, maximum capability</span>
+      <span class="pill"><span class="dot l"></span> Local slice — private, free, offline</span>
+    </div>
+    <p class="lead" style="font-size:15px">Scroll the seven layers below, or jump to one:</p>
+    <div class="minimap" id="minimap"></div>
+  </header>
+</div>
+
+<div class="wrap" id="sections"></div>
+
+<div class="wrap">
+  <section class="choose" id="choose">
+    <h2>So… what do I use when?</h2>
+    <p class="role">Answer three questions and your slice falls out.</p>
+
+    <details class="qa"><summary>Is the data sensitive, or do I need it to work offline?</summary>
+      <div class="ans"><b>Yes → go Local.</b> VS Code → Cline → localhost → DeepSeek/Qwen → Ollama → your Mac. Nothing leaves the machine, costs nothing per run. <b>No →</b> the cloud is fair game; keep reading.</div></details>
+
+    <details class="qa"><summary>Is the task hard — real coding, deep reasoning, long agentic work?</summary>
+      <div class="ans"><b>Yes → go Frontier.</b> Terminal → Claude Code → Claude. You're paying for quality and the best agent tooling, and it's worth it. <b>No / bulk & repetitive →</b> a cheap open model (DeepSeek) via OpenRouter or local is plenty.</div></details>
+
+    <details class="qa"><summary>Does it need to run on a schedule or without me watching?</summary>
+      <div class="ans"><b>Yes →</b> that's the <b>Orchestration rail</b> — cron, a cloud agent, or a pipeline drives your chosen slice automatically. (Your stock scanner is exactly this.) <b>No →</b> you're driving it by hand from a Surface.</div></details>
+
+    <details class="qa"><summary>Should the AI know about *my* projects and notes?</summary>
+      <div class="ans"><b>Yes →</b> that's the <b>Knowledge rail</b> — point it at your Obsidian vault / docs via RAG, or keep a CLAUDE.md / memory file so facts persist across sessions.</div></details>
   </section>
+</div>
+
+<footer>
+  Self-contained single-page guide · works offline · open on any device.<br>
+  Source: <a href="https://github.com/SagarM11/ai-stack-dashboard">github.com/SagarM11/ai-stack-dashboard</a>
+</footer>
+
+<button class="toTop" id="toTop" aria-label="Back to top">↑</button>
 
 <script>
 const LAYERS = [
-  {n:"1", name:"Surfaces", tag:"where you sit", role:"The window between you and the AI — the cockpit, holding no intelligence of its own.",
-   chips:[["Terminal","f"],["IDE (VS Code)","l"],["Chat UI",""],["Obsidian",""],["Mobile",""]],
-   what:"The apps where you actually type and read results. A surface captures your input and renders output; it hosts or connects to a harness. By itself it’s inert glass.",
-   how:"It forwards your prompt to an agent/model and streams the reply back. Some surfaces embed an agent (Cursor, Claude Code in a terminal); others are thin chat front-ends to an API.",
+  {id:"L1", n:"1", name:"Surfaces", tag:"where you sit",
+   role:"The window between you and the AI — the cockpit. It holds no intelligence of its own; it just captures what you type and shows what comes back.",
+   what:"The apps where you actually interact: a terminal, your IDE, a chat web/desktop app, Obsidian, a phone app. Some surfaces embed an agent (Cursor, Claude Code in a terminal); others are thin front-ends to a model behind an API.",
+   how:"It forwards your prompt down the stack and streams the reply back up, rendering text, diffs, or tool output. Think cockpit, not engine — swapping surfaces never changes the brain underneath.",
+   chips:["Terminal","IDE (VS Code)","Chat UI","Obsidian","Mobile app"],
    f:["Terminal","Best home for coding agents — fast, scriptable, keyboard-first."],
-   l:["IDE (VS Code)","Cline/Continue live here and edit files inline as you watch."]},
+   l:["IDE (VS Code)","Cline / Continue live here and edit your files inline as you watch."]},
 
-  {n:"2", name:"Agents / Harnesses", tag:"the hands", role:"Software that turns a model’s text into real actions: read files, run commands, edit code, call tools — in a loop.",
-   chips:[["Claude Code","f"],["Codex",""],["Cline / OpenCode","l"],["Aider / Cursor",""]],
-   what:"A model on its own only emits text. A harness gives it hands: it parses the model’s tool calls, executes them against your machine, feeds results back, and repeats until the task is done.",
-   how:"The agentic loop → prompt the model → model returns tool-call JSON → harness runs it (edit file, run test, search) → result appended to context → loop. Stops when the model says it’s finished.",
-   f:["Claude Code","Frontier brain + the most capable agent tooling and permissions."],
+  {id:"L2", n:"2", name:"Agents / Harnesses", tag:"the hands",
+   role:"Software that turns a model's words into real actions — reading files, running commands, editing code, calling tools — in a loop until the job is done.",
+   what:"A raw model only emits text. A harness gives it hands: it reads the model's tool requests, executes them on your machine, feeds the results back, and repeats. This is what makes something an 'agent' rather than a chatbot.",
+   how:"The agentic loop: prompt the model → model returns tool-call JSON (e.g. 'edit file X', 'run tests') → the harness executes it → the result is appended to the conversation → loop. It stops when the model signals the task is complete.",
+   chips:["Claude Code","Codex","Cline","OpenCode","Aider","Cursor"],
+   f:["Claude Code","Frontier brain plus the most capable agent tooling and permissioning."],
    l:["Cline / OpenCode","Open agents that let you bring your own (local) model."]},
 
-  {n:"3", name:"Protocol / Interop", tag:"the glue", role:"Shared contracts that let any harness talk to any model or tool without custom plumbing.",
-   chips:[["MCP","f"],["OpenAI-compat API","l"],["Tool / fn-calling",""]],
-   what:"The reason the stack snaps together instead of being 50 incompatible pairs. Standard formats mean you can swap brain, harness, or tool independently — the USB-C of AI.",
-   how:"The harness sends a standard chat request; the model returns standard tool-call JSON. MCP servers expose tools and context (files, DBs, APIs) over one protocol any agent can speak.",
-   f:["MCP","Anthropic’s open standard — Claude Code speaks it natively."],
-   l:["OpenAI-compatible API","The lingua franca local runtimes (Ollama) expose, so any client connects."]},
+  {id:"L3", n:"3", name:"Protocol / Interop", tag:"the glue",
+   role:"The shared contracts that let any harness talk to any model or tool without bespoke wiring. The reason the stack snaps together instead of being a hundred incompatible pairs.",
+   what:"Standard request/response formats and tool schemas. They're invisible until you realize they're why you can swap the brain, the harness, or a tool independently — the USB-C of the AI world.",
+   how:"The harness sends a standardized chat request; the model replies with standardized tool-call JSON. MCP (Model Context Protocol) lets servers expose tools, files, and data over one protocol that any agent can speak — connect once, use everywhere.",
+   chips:["MCP","OpenAI-compatible API","Tool / function calling","JSON schema"],
+   f:["MCP","Anthropic's open standard for tools & context — Claude Code speaks it natively."],
+   l:["OpenAI-compatible API","The lingua franca local runtimes expose, so any client connects."]},
 
-  {n:"4", name:"Access / Routing", tag:"the wiring", role:"How a harness reaches a brain — and decides which one.",
-   chips:[["Direct API","f"],["OpenRouter",""],["Local endpoint","l"]],
-   what:"Between ‘I want to use a model’ and the model itself sits an endpoint + (usually) a key. Routers add a layer that picks among many providers for cost, speed, or fallback.",
-   how:"You point the harness at a URL. Cloud: api.anthropic.com + key. Router: openrouter.ai → one key, hundreds of models. Local: http://localhost:11434 (Ollama) → no key, no internet.",
-   f:["Direct provider API","Lowest latency, full features, you pay per token."],
-   l:["Local endpoint","localhost — free, private, runs with the Wi-Fi off."]},
+  {id:"L4", n:"4", name:"Access / Routing", tag:"the wiring",
+   role:"How a harness actually reaches a brain — and decides which one to use.",
+   what:"Between 'I want to use a model' and the model itself sits an endpoint and (usually) a key. Routers add a layer on top that picks among many providers for cost, speed, or fallback.",
+   how:"You point the harness at a URL. Cloud: api.anthropic.com + an API key. Router: openrouter.ai gives one key to hundreds of models. Local: http://localhost:11434 (Ollama) — no key, no internet, no per-token cost.",
+   chips:["Direct provider API","OpenRouter","Local endpoint","API keys"],
+   f:["Direct provider API","Lowest latency and full features; you pay per token."],
+   l:["Local endpoint","localhost — free, private, runs with the Wi-Fi switched off."]},
 
-  {n:"5", name:"Models / Brains", tag:"the brains", role:"The neural nets that actually reason and generate. Interchangeable engines.",
-   chips:[["Frontier: Claude·GPT·Gemini","f"],["Open: Qwen·DeepSeek·Llama·Hermes","l"]],
-   what:"Two families. Frontier closed models (Claude, GPT, Gemini) — most capable, cloud-only, pay per use. Open-weight models (Qwen, DeepSeek, Llama; Hermes is a fine-tune of these) — downloadable, runnable on your own metal.",
-   how:"A transformer predicts the next token over a context window. Instruction-tuning + RLHF make it follow you. Capability ≈ parameters × training quality. Quantization (Q4/Q8) shrinks open models to fit consumer hardware with small quality loss.",
+  {id:"L5", n:"5", name:"Models / Brains", tag:"the brains",
+   role:"The neural networks that actually reason and generate. These are interchangeable engines — the same harness can drive any of them.",
+   what:"Two families. Frontier closed models (Claude, GPT, Gemini) are the most capable but cloud-only and pay-per-use. Open-weight models (Qwen, DeepSeek, Llama — Hermes is a fine-tune of these, not its own model) are downloadable and run on hardware you control.",
+   how:"A transformer predicts the next token across a context window. Instruction-tuning and RLHF make it follow your intent. Capability ≈ parameters × training quality. Quantization (Q4/Q8) shrinks open models so they fit consumer hardware, trading a little quality for a lot of size.",
+   chips:["Claude","GPT","Gemini","Qwen","DeepSeek","Llama","Hermes"],
    f:["Frontier (closed)","Reach for hard reasoning, long agentic coding, anything quality-critical."],
    l:["Open weights","Private data, bulk jobs, zero marginal cost, full control."]},
 
-  {n:"6", name:"Inference Runtime", tag:"the engine", role:"The software that loads model weights and runs them to produce tokens.",
-   chips:[["Ollama","l"],["llama.cpp",""],["LM Studio / MLX",""],["vLLM / managed","f"]],
-   what:"A model file is just numbers until a runtime executes it. Locally this is your job (Ollama et al.); in the cloud the provider runs it for you behind the API.",
-   how:"Loads weights into RAM/VRAM, runs the forward pass, streams tokens, and manages the KV-cache and batching for speed. Ollama wraps llama.cpp for one-command local models; vLLM serves many users at high throughput.",
-   f:["vLLM / managed cloud","The provider’s runtime — invisible, scales for you."],
-   l:["Ollama","`ollama run qwen` and you’re talking to a local brain."]},
+  {id:"L6", n:"6", name:"Inference Runtime", tag:"the engine",
+   role:"The software that loads model weights and runs them to produce tokens. The bridge between 'I downloaded a model' and 'I can talk to it.'",
+   what:"A model file is just numbers until a runtime executes it. Locally that's your job (Ollama and friends); in the cloud the provider runs it for you, hidden behind their API.",
+   how:"It loads the weights into RAM/VRAM, runs the forward pass, streams tokens out, and manages the KV-cache and batching for speed. Ollama wraps llama.cpp for one-command local models; vLLM serves many users at high throughput in production.",
+   chips:["Ollama","llama.cpp","LM Studio","MLX","vLLM"],
+   f:["vLLM / managed cloud","The provider's runtime — invisible, scales for you."],
+   l:["Ollama","'ollama run qwen' and you're talking to a local brain in seconds."]},
 
-  {n:"7", name:"Compute / Hardware", tag:"the metal", role:"The physical chips doing the math. The floor everything stands on.",
-   chips:[["Apple Silicon","l"],["NVIDIA GPU",""],["Cloud GPU","f"]],
-   what:"Decides which open models you can even run. The hard limit is memory: the model must fit in VRAM (NVIDIA) or unified RAM (Apple). Bandwidth sets the speed.",
-   how:"Matrix multiplies run massively parallel across thousands of GPU/NPU cores. A 7B model in Q4 needs ~5GB; a 70B needs ~40GB+. Apple’s unified memory lets a Mac punch above its weight for local LLMs.",
-   f:["Cloud GPU (rented)","Rent an H100 by the minute for big models / training."],
+  {id:"L7", n:"7", name:"Compute / Hardware", tag:"the metal",
+   role:"The physical chips doing the math. The floor everything else stands on, and the hard limit on which open models you can even run.",
+   what:"The binding constraint is memory: a model must fit in VRAM (NVIDIA) or unified RAM (Apple). Memory bandwidth then sets how fast it runs.",
+   how:"Matrix multiplications run massively parallel across thousands of GPU/NPU cores. Rough sizing: a 7B model in Q4 needs ~5GB; a 70B needs ~40GB+. Apple's unified memory lets a Mac punch well above its weight for local LLMs.",
+   chips:["Apple Silicon","NVIDIA GPU","Cloud GPU (RunPod, Lambda)"],
+   f:["Cloud GPU (rented)","Rent an H100 by the minute for the biggest models or training."],
    l:["Apple Silicon","Unified memory makes a Mac a surprisingly strong local box."]},
 ];
 
 const RAILS = [
-  {n:"K", name:"Knowledge & Memory", tag:"wraps every layer", role:"Where your durable context lives so the AI knows *your* world — not just the public internet.",
-   chips:[["Obsidian vault",""],["RAG / vector DB",""],["Embeddings",""],["CLAUDE.md / memory",""],["Notes / PKM",""]],
-   what:"This rail doesn’t sit in the stack — it wraps around it and feeds every slice. It’s the difference between a generic assistant and one that knows your projects, notes, and decisions.",
-   how:"Documents are chunked → embedded into vectors → stored. At query time the most relevant chunks are retrieved and injected into the prompt (RAG). Memory/CLAUDE.md files persist facts across sessions verbatim.",
-   f:["Cloud RAG","Hosted vector DBs + managed embeddings for big corpora."],
-   l:["Obsidian + local embeddings","Your vault stays on disk; nothing leaves the machine."]},
+  {id:"RK", n:"K", rail:true, name:"Knowledge & Memory", tag:"wraps every layer",
+   role:"Where your durable context lives, so the AI knows your world — not just the public internet. This rail doesn't sit in the stack; it wraps around it and feeds every slice.",
+   what:"The difference between a generic assistant and one that knows your projects, notes, and past decisions. It's how your Obsidian vault stops being just a place you write and becomes a brain the AI can read.",
+   how:"Documents are chunked, embedded into vectors, and stored. At query time the most relevant chunks are retrieved and injected into the prompt — that's RAG. Memory and CLAUDE.md files persist specific facts across sessions, verbatim.",
+   chips:["Obsidian vault","RAG / vector DB","Embeddings","CLAUDE.md / memory","Notes / PKM"],
+   f:["Cloud RAG","Hosted vector DBs and managed embeddings for large corpora."],
+   l:["Obsidian + local embeddings","Your vault stays on disk; nothing ever leaves the machine."]},
 
-  {n:"O", name:"Orchestration", tag:"wraps every layer", role:"Turns one-off prompts into reliable, repeatable systems.",
-   chips:[["Cron / schedules",""],["Multi-agent",""],["Pipelines (n8n)",""],["Evals / tracing",""],["Guardrails",""]],
-   what:"Also a cross-cutting rail. A single prompt is a tool; a scheduled, monitored, multi-step workflow is a system. Your stock scanner lives entirely here.",
-   how:"A scheduler or workflow engine triggers a slice automatically, chains steps, fans work out to parallel agents, and checks output quality with evals before trusting it. Guardrails catch bad outputs.",
-   f:["Managed schedules / cloud agents","Run on a server so it fires even when your laptop’s shut."],
+  {id:"RO", n:"O", rail:true, name:"Orchestration & Automation", tag:"wraps every layer",
+   role:"Turns one-off prompts into reliable, repeatable systems. Also a cross-cutting rail — it drives a slice automatically instead of you doing it by hand.",
+   what:"A single prompt is a tool; a scheduled, monitored, multi-step workflow is a system. Your scheduled stock scanner lives entirely on this rail.",
+   how:"A scheduler or workflow engine triggers a slice on its own, chains steps, fans work out to parallel agents, and checks output quality with evals before trusting it. Guardrails catch and reject bad outputs.",
+   chips:["Cron / schedules","Multi-agent","Pipelines (n8n)","Evals / tracing","Guardrails"],
+   f:["Managed schedules / cloud agents","Runs on a server, so it fires even when your laptop is shut."],
    l:["cron + local scripts","Free, private automation on your own machine."]},
 ];
 
-const layersEl = document.getElementById('layers');
-const railL = document.getElementById('railLeft');
-const railR = document.getElementById('railRight');
-
-function cardHTML(d, isRail){
-  const has_f = d.chips.some(c=>c[1]==='f');
-  const has_l = d.chips.some(c=>c[1]==='l');
-  const badges = isRail ? '' : `<div class="badges">${has_f?'<span class="b f">F</span>':''}${has_l?'<span class="b l">L</span>':''}</div>`;
-  const chips = d.chips.map(c=>`<span class="chip ${c[1]}">${c[0]}</span>`).join('');
-  return `<button class="card ${has_f?'has-f':''} ${has_l?'has-l':''}" data-id="${d.name}">
-    ${badges}
-    <div class="row1">
-      <span class="num">${d.n}</span>
-      <span class="ttl">${d.name}</span>
-      <span class="tag">${d.tag}</span>
-    </div>
-    <div class="chips">${chips}</div>
-  </button>`;
-}
-
-layersEl.innerHTML = LAYERS.map(d=>cardHTML(d,false)).join('');
-railL.innerHTML = `<div class="railhead">Knowledge ↕</div>` + cardHTML(RAILS[0],true);
-railR.innerHTML = `<div class="railhead">Orchestration ↕</div>` + cardHTML(RAILS[1],true);
-
 const ALL = [...LAYERS, ...RAILS];
-const sheet = document.getElementById('sheet');
-const scrim = document.getElementById('scrim');
-const body  = document.getElementById('sheetBody');
-let lastFocus = null;
 
-function open(id){
-  const d = ALL.find(x=>x.name===id); if(!d) return;
-  body.innerHTML = `
-    <h2 id="sheetTitle"><span class="num">${d.n}</span>${d.name}</h2>
-    <div class="role">${d.role}</div>
-    <h3>What it is</h3><p>${d.what}</p>
-    <h3>How it works</h3><p>${d.how}</p>
-    <h3>When to use which</h3>
-    <div class="pick">
-      <div class="pickcard f"><b>◆ Frontier — ${d.f[0]}</b><span>${d.f[1]}</span></div>
-      <div class="pickcard l"><b>◇ Local — ${d.l[0]}</b><span>${d.l[1]}</span></div>
+// mini map
+document.getElementById('minimap').innerHTML = ALL.map(d=>`
+  <a href="#${d.id}" class="${d.rail?'rail':''}">
+    <span class="mn">${d.n}</span>
+    <span class="mt">${d.name}</span>
+    <span class="mg">${d.tag}</span>
+  </a>`).join('');
+
+// sections
+document.getElementById('sections').innerHTML = ALL.map(d=>`
+  <section class="layer ${d.rail?'rail':''}" id="${d.id}">
+    <div class="lhead"><span class="lnum">${d.n}</span><h2>${d.name}</h2>
+      <div class="ltag">${d.tag}</div>
     </div>
-    <p class="hint">Tools in this layer: ${d.chips.map(c=>c[0]).join(' · ')}</p>`;
-  lastFocus = document.activeElement;
-  scrim.classList.add('open'); sheet.classList.add('open');
-  sheet.focus();
-}
-function close(){ scrim.classList.remove('open'); sheet.classList.remove('open'); if(lastFocus) lastFocus.focus(); }
+    <p class="role">${d.role}</p>
+    <div class="block"><h3>What it is</h3><p>${d.what}</p></div>
+    <div class="block"><h3>How it works</h3><p>${d.how}</p></div>
+    <div class="chips">${d.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+    <div class="picks">
+      <div class="pick f"><div class="lbl">◆ FRONTIER PICK</div><div class="nm">${d.f[0]}</div><div class="ds">${d.f[1]}</div></div>
+      <div class="pick l"><div class="lbl">◇ LOCAL PICK</div><div class="nm">${d.l[0]}</div><div class="ds">${d.l[1]}</div></div>
+    </div>
+  </section>`).join('');
 
-document.addEventListener('click', e=>{
-  const c = e.target.closest('.card');
-  if(c){ open(c.dataset.id); }
-});
-document.getElementById('close').addEventListener('click', close);
-scrim.addEventListener('click', close);
-document.addEventListener('keydown', e=>{ if(e.key==='Escape') close(); });
-
-// slice toggle
-const tgl = document.querySelectorAll('.toggle button');
-tgl.forEach(b=> b.addEventListener('click', ()=>{
-  tgl.forEach(x=>x.setAttribute('aria-pressed','false'));
-  b.setAttribute('aria-pressed','true');
-  document.body.dataset.slice = b.dataset.slice;
-}));
-
-document.getElementById('built').textContent = '';
+// back to top
+const toTop = document.getElementById('toTop');
+addEventListener('scroll', ()=>{ toTop.classList.toggle('show', scrollY>500); }, {passive:true});
+toTop.addEventListener('click', ()=> scrollTo({top:0, behavior:'smooth'}));
 </script>
 </body>
 </html>
